@@ -56,9 +56,35 @@ exports.config = {
         // 5 instances get started at a time.
         maxInstances: 5,
         //
-        //browserName: 'chrome',
-        browserName: 'firefox',
+        browserName: 'chrome',
+        'goog:chromeOptions': {
+            'args': ['--allow-file-access-from-files',
+                     '--use-fake-ui-for-media-stream',
+                     '--allow-file-access',
+                     '--use-fake-device-for-media-stream',
+                     'disable-infobars',
+                     '--test-type',
+                     '--disable-extensions',
+                     '--no-sandbox',
+                     '--disable-gpu',
+                     '--disable-popup-blocking',
+                     'incognito',
+                     'start-maximized',
+                     'window-size=1080,720',
+                     '--ignore-certificate-errors']},
+
         acceptInsecureCerts: true
+
+        // browserName: 'firefox',
+        // 'moz:firefoxOptions': {
+        //     'args': ['--allow-file-access-from-files',
+        //              '--use-fake-ui-for-media-stream',
+        //              '--allow-file-access',
+        //              '--use-fake-device-for-media-stream']},
+        // acceptInsecureCerts: true
+
+
+        
         // If outputDir is provided WebdriverIO can capture driver session logs
         // it is possible to configure which logTypes to include/exclude.
         // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
@@ -71,7 +97,7 @@ exports.config = {
     // Define all options that are relevant for the WebdriverIO instance here
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: 'info',
+    logLevel: 'error',
     //
     // Set specific log levels per logger
     // loggers:
@@ -111,7 +137,9 @@ exports.config = {
     // Services take over a specific job you don't want to take care of. They enhance
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
+    //services: ['selenium-standalone'],
     services: ['selenium-standalone'],
+
     
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber

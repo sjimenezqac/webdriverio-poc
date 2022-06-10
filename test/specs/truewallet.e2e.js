@@ -1,152 +1,87 @@
-        /*
-        private static String GET_STARTED = "//button[@type=\"button\"]//*[text() = 'Get Started']";
-        private static String INSTALL_APP = "//button[@type=\"button\"]//*[text() = 'Install App']";
-        private static String CONTINUE = "//button[@type=\"button\"]//*[text()=\"Continue\"]";
-        private static String NEXT_SCREEN = "//button[@type=\"button\"]//*[text()=\"Next\"]";
-        private static String LABEL_EMAIL = "//input[@type=\"email\"]";
-        private static String SCAN_DOCUMENT = "//button[@type=\"button\"]//*[text()=\"Scan\"]";
-        private static String UPLOAD_FILE = "//input[@type=\"file\"]";
-        private static String TAKE_PHOTO = "//button[@type=\"button\"]//*[text()=\"Take Photo\"]";
-        private static String SAVE = "//button[@type=\"button\"]//*[text()=\"Save\"]";
-        private static String SHOW_ID = "//button[@type=\"button\"]//*[text()=\"Show ID\"]";
-        */
+const TrueWallet = require('../pageobjects/truewallet.page');
 
-describe('My TrueAge application - Happy Path', () => {
+let currentDate = '';
 
-    // Buttons
-    const getStartedButton = '//button[@type="button"]//*[text()="Get Started"]';
-    const nextButton = '//button[@type="button"]//*[text()="Next"]';
-
-    // Fields
-    const emailField = '//input[@type="email"]';
-
-    // Labels
-    const getStartedLabel = `Set up your TruAge`;
-    const emailLabel = `Let's create your TruAge`;
-    const greatLabel = `Great`;
-
-
-    it('should open the browser and navigate to website', async () => {
-        browser.deleteCookies();
-        browser.url(`https://wallet.pilot.truage.dev`);
-        browser.pause(2000);
-        expect(browser).toHaveUrl(`https://wallet.pilot.truage.dev/`);
-        expect(browser).toHaveTitle(`TruAge™ Wallet`);
-    });
-
-    it('should start the  on Get Started', async () => {
-        expect($(`*=${getStartedLabel}`)).toExist();
-        const getStartedElement = await $(getStartedButton);
-        await expect(getStartedElement).toBeExisting();
-        await getStartedElement.click();
-    });
-
-    it('should fill the email and go to next step', async () => {
-        expect($(`*=${emailLabel}`)).toExist();
-        const emailElement = await $(emailField);
-        await expect(emailElement).toBeClickable();
-        
-        var date = new Date();
-        emailElement.setValue('teste' + getDateStringCustom(date) + '@email.com');
-        
-        await sleep(1000);
-
-        const nextElement = await $(nextButton);
-        await expect(nextElement).toBeClickable();
-        await nextElement.click();
-    });
-
-    it('should create a user with the email provided', async () => {
-
-        browser.waitUntil(() => {
-            return $(`*=${greatLabel}`).isDisplayed();
-        }, {
-            timeout: 30000,
-            interval: 1000,
-            timeoutMsg: 'Expected text to be founded after 30s'
-        });
-
-        console.log("*************************************************************************************");
-
-        // expect($(`*=${creatingProfileLabel}`)).toExist();
-        // expect($(`*=${greatLabel}`)).toExist();
-
-        const nextElement = await $(nextButton);
-        expect(nextElement).toBeClickable();
-        await nextElement.click();
-    });
-
-
-
+beforeEach(function () {
+    var date = new Date();
+    currentDate = getDateStringCustom(date);
     
-    it('ALL', async () => {
-        console.log('It is over dude... Get the current xPath needed...');
-        await sleep(50000);
-        // const elem = await $('header').$('h1*=Welcome')
+    console.log(`+---------------------------------------------------------------------------------+`);
+    console.log(`| Starting execution of Test Id: ${currentDate}                                   |`);                            
+    console.log(`+---------------------------------------------------------------------------------+`);
 
-        /*
-        private static String GET_STARTED = "//button[@type=\"button\"]//*[text() = 'Get Started']";
-        private static String INSTALL_APP = "//button[@type=\"button\"]//*[text() = 'Install App']";
-        private static String CONTINUE = "//button[@type=\"button\"]//*[text()=\"Continue\"]";
-        private static String NEXT_SCREEN = "//button[@type=\"button\"]//*[text()=\"Next\"]";
-        private static String LABEL_EMAIL = "//input[@type=\"email\"]";
-        private static String SCAN_DOCUMENT = "//button[@type=\"button\"]//*[text()=\"Scan\"]";
-        private static String UPLOAD_FILE = "//input[@type=\"file\"]";
-        private static String TAKE_PHOTO = "//button[@type=\"button\"]//*[text()=\"Take Photo\"]";
-        private static String SAVE = "//button[@type=\"button\"]//*[text()=\"Save\"]";
-        private static String SHOW_ID = "//button[@type=\"button\"]//*[text()=\"Show ID\"]";
-        */
+    TrueWallet.open();
+    browser.deleteCookies();
+    sleep(2000);
+});
 
-        /*
-        // Buttons
-        const getStartedButton = '//button[@type="button"]//*[text()="Get Started"]';
-        const nextButton = '//button[@type="button"]//*[text()="Next"]';
-        const scanButton = '//button[@type="button"]//*[text()="Scan"]';
+afterEach(function () {
+    browser.saveScreenshot(`./test/scenarios/photos/screenshot${currentDate}.png`);
+});
 
-        // Text Fields
-        const emailField = '//input[@type="email"]';
+describe('My TrueAge application - Happy Scenarios', () => {
 
-        const emailElement = await $(emailField);
-        await expect(emailElement).toBeExisting();
-        
-        var date = new Date();
-        emailElement.setValue('teste' + getDateStringCustom(date) + '@email.com');
+    it('should do the happy path on website', async () => {
+
+        await TrueWallet.clickGetStarted();
+        var emailAddress = getGenericEmailAddress();
+        await TrueWallet.fillEmailAddress(emailAddress);
         await sleep(2000);
+        await TrueWallet.clickNext();
+        await TrueWallet.searchTextOnPage('Great');
+        await TrueWallet.clickNext();
+        await TrueWallet.searchTextOnPage('Make sure');
+        await TrueWallet.clickScanDocument();
+        await TrueWallet.searchTextOnPage('Scan barcode on the back of license');
+        await TrueWallet.uploadDriverLicense('scenarios//photos//barcode-202206.jpg');
+        await TrueWallet.searchTextOnPage('Looks good');
+        await TrueWallet.clickNext();
+        await sleep(1000);
+        await TrueWallet.uploadPhoto('scenarios//photos//Thor.png');
+        await TrueWallet.searchTextOnPage('Looks good');
+        await TrueWallet.clickNext();
+        await TrueWallet.searchTextOnPage('Your TruAge');
+        await TrueWallet.clickNext();
+        await TrueWallet.searchTextOnPage('Congratulations');
+        await TrueWallet.clickSave();
+        await TrueWallet.searchTextOnPage('Welcome to TruAge');
+        await TrueWallet.searchTextOnPage('Over 21');
+    }); 
+});
 
-        let nextElement = await $(nextButton);
-        await expect(nextElement).toBeExisting();
-        await nextElement.click();
+describe('My TrueAge application - Negative Scenarios', () => {
 
+    // it('should return an error message when email is invalid', async () => {
+    //     await TrueWallet.clickGetStarted();
+    //     var emailAddress = 'invalidEmail.com';
+    //     await TrueWallet.fillEmailAddress(emailAddress);
+    //     await sleep(2000);
+    //     await TrueWallet.searchTextOnPage('Please enter a valid email address');
+    // });
 
-        browser.waitUntil(() => {
-            return $(nextButton).isExisting();
-        }, 20000);
+    it('should return an error message when email is already in use', async () => {
+        await TrueWallet.clickGetStarted();
+        var emailAddress = 'rdrg.furlan@gmail.com';
+        await TrueWallet.fillEmailAddress(emailAddress);
+        await sleep(2000);
+        await TrueWallet.searchTextOnPage('already in use');
+    });   
 
-        console.log("3 - passou aqui...");
-        
-
-        await sleep(10000);
-
-        nextElement = null;
-        nextElement = await $(nextButton);
-        await expect(nextElement).toBeExisting();
-        await nextElement.click();
-
-        const scanElement = await $(scanButton);
-        await expect(scanElement).toBeExisting();
-        await scanElement.click();
-
-        await sleep(10000);
-
-
-        // await LoginPage.clickGetStarted();
-
-        // await LoginPage.login('tomsmith', 'SuperSecretPassword!');
-        // await expect(SecurePage.flashAlert).toBeExisting();
-        // await expect(SecurePage.flashAlert).toHaveTextContaining(
-        //     'You logged into a secure area!');
-        */
-    });
+    it('should return a error when document is invalid', async () => {
+        await TrueWallet.clickGetStarted();
+        await sleep(2000);
+        var emailAddress = getGenericEmailAddress();
+        await TrueWallet.fillEmailAddress(emailAddress);
+        await sleep(2000);
+        await TrueWallet.clickNext();
+        await TrueWallet.searchTextOnPage('Great');
+        await TrueWallet.clickNext();
+        await TrueWallet.searchTextOnPage('Make sure');
+        await TrueWallet.clickScanDocument();
+        await TrueWallet.searchTextOnPage('Scan barcode on the back of license');
+        await TrueWallet.uploadDriverLicense('scenarios//photos//Thor.png');
+        await TrueWallet.searchTextOnPage('Scan Failure');
+    });   
 });
 
 function sleep(ms) {
@@ -154,6 +89,12 @@ function sleep(ms) {
       setTimeout(resolve, ms);
     });
   }
+
+function getGenericEmailAddress() {
+    // var date = new Date();
+    // this.currentDate = getDateStringCustom(date);
+    return `teste${currentDate}@email.com`;
+}
 
 function getDateStringCustom(oDate) {
     var sDate;
