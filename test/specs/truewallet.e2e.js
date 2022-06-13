@@ -1,10 +1,11 @@
 const TrueWallet = require('../pageobjects/truewallet.page');
+const Utility = require('../common/utility');
 
 let currentDate = '';
 
 beforeEach(function () {
     var date = new Date();
-    currentDate = getDateStringCustom(date);
+    currentDate = Utility.getDateStringCustom(date);
     
     console.log(`+---------------------------------------------------------------------------------+`);
     console.log(`| Starting execution of Test Id: ${currentDate}                                   |`);                            
@@ -12,21 +13,20 @@ beforeEach(function () {
 
     TrueWallet.open();
     browser.deleteCookies();
-    sleep(2000);
+    Utility.sleep(2000);
 });
 
 afterEach(function () {
-    browser.saveScreenshot(`./test/scenarios/photos/screenshot${currentDate}.png`);
+    browser.saveScreenshot(`./test/results/photos/screenshot${currentDate}.png`);
 });
 
 describe('My TrueAge application - Happy Scenarios', () => {
 
     it('should do the happy path on website', async () => {
-
         await TrueWallet.clickGetStarted();
-        var emailAddress = getGenericEmailAddress();
+        var emailAddress = Utility.getGenericEmailAddress(currentDate);
         await TrueWallet.fillEmailAddress(emailAddress);
-        await sleep(2000);
+        await Utility.sleep(2000);
         await TrueWallet.clickNext();
         await TrueWallet.searchTextOnPage('Great');
         await TrueWallet.clickNext();
@@ -36,7 +36,7 @@ describe('My TrueAge application - Happy Scenarios', () => {
         await TrueWallet.uploadDriverLicense('scenarios//photos//barcode-202206.jpg');
         await TrueWallet.searchTextOnPage('Looks good');
         await TrueWallet.clickNext();
-        await sleep(1000);
+        await Utility.sleep(1000);
         await TrueWallet.uploadPhoto('scenarios//photos//Thor.png');
         await TrueWallet.searchTextOnPage('Looks good');
         await TrueWallet.clickNext();
@@ -60,19 +60,23 @@ describe('My TrueAge application - Negative Scenarios', () => {
     // });
 
     it('should return an error message when email is already in use', async () => {
-        await TrueWallet.clickGetStarted();
+        
         var emailAddress = 'rdrg.furlan@gmail.com';
+
+        await TrueWallet.clickGetStarted();
         await TrueWallet.fillEmailAddress(emailAddress);
-        await sleep(2000);
+        await Utility.sleep(2000);
         await TrueWallet.searchTextOnPage('already in use');
     });   
 
     it('should return a error when document is invalid', async () => {
+        
+        var emailAddress = Utility.getGenericEmailAddress(currentDate);
+
         await TrueWallet.clickGetStarted();
-        await sleep(2000);
-        var emailAddress = getGenericEmailAddress();
+        await Utility.sleep(2000);
         await TrueWallet.fillEmailAddress(emailAddress);
-        await sleep(2000);
+        await Utility.sleep(2000);
         await TrueWallet.clickNext();
         await TrueWallet.searchTextOnPage('Great');
         await TrueWallet.clickNext();
@@ -83,30 +87,3 @@ describe('My TrueAge application - Negative Scenarios', () => {
         await TrueWallet.searchTextOnPage('Scan Failure');
     });   
 });
-
-function sleep(ms) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
-    });
-  }
-
-function getGenericEmailAddress() {
-    // var date = new Date();
-    // this.currentDate = getDateStringCustom(date);
-    return `teste${currentDate}@email.com`;
-}
-
-function getDateStringCustom(oDate) {
-    var sDate;
-    if (oDate instanceof Date) {
-        sDate = oDate.getYear() + 1900
-            + ((oDate.getMonth() + 1 < 10) ? '0' + (oDate.getMonth() + 1) : oDate.getMonth() + 1)
-            + ((oDate.getDay() < 10) ? '0' + (oDate.getDay()) : oDate.getDay())
-            + ((oDate.getHours() < 10) ? '0' + (oDate.getHours()) : oDate.getHours())
-            + ((oDate.getMinutes() < 10) ? '0' + (oDate.getMinutes()) : oDate.getMinutes())
-            + ((oDate.getSeconds() < 10) ? '0' + (oDate.getSeconds()) : oDate.getSeconds());
-    } else {
-        throw new Error("oDate is not an instance of Date");
-    }
-    return sDate;
-}

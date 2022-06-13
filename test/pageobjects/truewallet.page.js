@@ -1,6 +1,7 @@
 
 const { default: $ } = require('webdriverio/build/commands/browser/$');
 const Page = require('./page');
+const BrowserElements = require('../common/browser.elements');
 
 /**
  * sub page containing specific selectors and methods for a specific page
@@ -37,48 +38,49 @@ class TrueWallet extends Page {
      */  
     async clickGetStarted () {
         let element = await this.btnGetStarted;
-        this.elementClick(element);
+        BrowserElements.elementClick(element);
     }
 
     async clickNext () {
         let element = await this.btnNext;
-        this.elementClick(element);
+        BrowserElements.elementClick(element);
     }
 
     async clickScanDocument () {
         let element = await this.btnScan;
-        this.elementClick(element);
+        BrowserElements.elementClick(element);
     }
 
     async clickTakePhoto () {
         let element = await this.btnTakePhoto;
-        this.elementClick(element);
+        BrowserElements.elementClick(element);
     }
     
     async clickSave () {
         let element = await this.btnSave;
-        this.elementClick(element);
+        BrowserElements.elementClick(element);
     }
 
     async searchTextOnPage(message){
         const element = browser.$(`//*[text()[contains(.,'${message}')]]`);
-        await element.waitForExist({ timeout: 30000, interval: 2000 });
-        await expect(element).toBeExisting();
+        await BrowserElements.searchTextOnPage(element);
     }
 
     async fillEmailAddress(emailAddress){
         let element = await this.inputEmailAddress;
-        this.elementSetValue(element, emailAddress);
+        BrowserElements.elementSetValue(element, emailAddress);
     }
 
     async uploadDriverLicense(imagePath){
         let element = await this.inputFileDocument;
         this.uploadImage(element, imagePath);
+        //BrowserElements.uploadImage(browser, element, imagePath);
     }
 
     async uploadPhoto(imagePath){
         let element = await this.inputFileDocument;
         this.uploadImage(element, imagePath);
+        // BrowserElements.uploadImage(browser, element, imagePath);
     }
 
     /**
@@ -89,25 +91,6 @@ class TrueWallet extends Page {
         expect(browser).toHaveUrl(`https://wallet.pilot.truage.dev/`);
         expect(browser).toHaveTitle(`TruAge™ Wallet`);
         return element;
-    }
-    
-    /**
-     * a method to encapsule automation code to interact with the page
-     * objects loaded
-     */
-    async elementClick(element){
-        await element.waitForExist({ timeout: 15000 });
-        await element.waitForClickable({timeout: 20000, interval: 500});
-        await expect(element).toBeExisting();
-        await element.click();
-    }
-
-    async elementSetValue(element, value){
-        await element.waitForExist({ timeout: 15000 });
-        await element.waitForClickable({timeout: 20000, interval: 1000});
-        await expect(element).toBeExisting();
-        await element.setValue(value);
-        await element.click();
     }
 
     async uploadImage(element, imagePath){
