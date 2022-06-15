@@ -49,49 +49,45 @@ exports.config = {
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
-    capabilities: [{
-    
-        // maxInstances can get overwritten per capability. So if you have an in-house Selenium
-        // grid with only 5 firefox instances available you can make sure that not more than
-        // 5 instances get started at a time.
-        maxInstances: 5,
-        //
-        browserName: 'chrome',
-        'goog:chromeOptions': {
-            'args': ['--allow-file-access-from-files',
-                     '--use-fake-ui-for-media-stream',
-                     '--allow-file-access',
-                     '--use-fake-device-for-media-stream',
-                     'disable-infobars',
-                     '--test-type',
-                     '--disable-extensions',
-                     '--no-sandbox',
-                     '--disable-gpu',
-                     '--disable-popup-blocking',
-                     //'incognito',
-                     //'test-type=browser',
-                     'headless',
-                     'start-maximized',
-                     'window-size=1080,720',
-                     '--ignore-certificate-errors']},
-
-        acceptInsecureCerts: true
-
-        // browserName: 'firefox',
-        // 'moz:firefoxOptions': {
-        //     'args': ['--allow-file-access-from-files',
-        //              '--use-fake-ui-for-media-stream',
-        //              '--allow-file-access',
-        //              '--use-fake-device-for-media-stream']},
-        // acceptInsecureCerts: true
-
-
-        
-        // If outputDir is provided WebdriverIO can capture driver session logs
-        // it is possible to configure which logTypes to include/exclude.
-        // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
-        // excludeDriverLogs: ['bugreport', 'server'],
-    }],
+    capabilities: [
+        {
+            maxInstances: 5,
+            browserName: 'chrome',
+            'goog:chromeOptions': {
+                'args': ['--allow-file-access-from-files',
+                        '--use-fake-ui-for-media-stream',
+                        '--allow-file-access',
+                        '--use-fake-device-for-media-stream',
+                        'disable-infobars',
+                        '--test-type',
+                        '--disable-extensions',
+                        '--no-sandbox',
+                        '--disable-gpu',
+                        '--disable-popup-blocking',
+                        'incognito',
+                        //'headless',
+                        'start-maximized',
+                        'window-size=1080,720',
+                        '--ignore-certificate-errors']},
+            acceptInsecureCerts: true
+        },
+        {
+            maxInstances: 5,
+            browserName: 'firefox',
+            'moz:firefoxOptions': {
+                'prefs': {'media.navigator.streams.fake' : true,
+                          'media.navigator.permission.disabled' : true,
+                          // 'browser.download.folderList' : 2,
+                          'browser.download.manager.showWhenStarting' : false,
+                          'browser.helperApps.neverAsk.saveToDisk' : 'application/zip,application/x-compress,application/octet-stream'
+                        },
+                'args': [
+                        ''
+                        //'-private',
+                        ]},
+            acceptInsecureCerts: true
+        }
+    ],
     //
     // ===================
     // Test Configurations
@@ -99,7 +95,7 @@ exports.config = {
     // Define all options that are relevant for the WebdriverIO instance here
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: 'error',
+    logLevel: 'info',
     //
     // Set specific log levels per logger
     // loggers:
@@ -141,6 +137,7 @@ exports.config = {
     // commands. Instead, they hook themselves up into the test process.
     //services: ['selenium-standalone'],
     services: ['selenium-standalone'],
+    //services: ['chromedriver'],
 
     
     // Framework you want to run your specs with.

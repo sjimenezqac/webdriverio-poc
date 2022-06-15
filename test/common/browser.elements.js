@@ -16,26 +16,30 @@ class BrowserElements {
     }
 
     async searchTextOnPage(element){
-        await element.waitForExist({ timeout: 30000, interval: 2000 });
+        await element.waitForExist({ timeout: 60000, interval: 2000 });
         await expect(element).toBeExisting();
     }
+    
+    async enableInputField(element){
+        await element.waitForExist({ timeout: 15000 });
+        console.log(element);
+        await browser.execute(
+            (el) => el.style.display = 'block',
+            element
+        );
+        console.log(element);
+        await element.waitForDisplayed();
+    }
+    
+    async uploadImage(element, imagePath){
+        const path = require('path');
+        var str = './/test';
+        const filePath = path.join(str, imagePath);
+        const remoteFilePath = await browser.uploadFile(filePath);
 
-    // async uploadImage(browser, element, imagePath){
-    //     await browser.execute(
-    //         (el) => el.style.display = 'block',
-    //         element
-    //     );
-    //     await element.waitForExist({ timeout: 15000 });
-    //     await element.waitForDisplayed();
-        
-    //     const path = require('path');
-    //     var str = __dirname;
-    //     console.log(str);
-    //     str = str.replace('pageobjects', '');
-    //     const filePath = path.join(str, imagePath);
-    //     const remoteFilePath = await browser.uploadFile(filePath);
-    //     await element.setValue(remoteFilePath);
-    // }
+        await this.enableInputField(element);
+        await element.setValue(remoteFilePath);
+    }
 }
 
 module.exports = new BrowserElements();

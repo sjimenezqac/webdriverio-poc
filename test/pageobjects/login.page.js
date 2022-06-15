@@ -10,11 +10,6 @@ class LoginPage extends Page {
     /**
      * define selectors using getter methods
      */
-    get btnGetStarted(){
-        return $('//*[@id="app"]/div/div/div/div/div/div/div[2]/div/button/span[2]/span/span');
-    }
-
-
     get inputUsername () {
         return $('#username');
     }

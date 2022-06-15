@@ -4,12 +4,11 @@ const Utility = require('../common/utility');
 let currentDate = '';
 
 beforeEach(function () {
+    currentDate = '';
     var date = new Date();
     currentDate = Utility.getDateStringCustom(date);
     
-    console.log(`+---------------------------------------------------------------------------------+`);
-    console.log(`| Starting execution of Test Id: ${currentDate}                                   |`);                            
-    console.log(`+---------------------------------------------------------------------------------+`);
+    console.log(`- Starting execution of Test Id: ${currentDate}`);
 
     TrueWallet.open();
     browser.deleteCookies();
@@ -22,11 +21,10 @@ afterEach(function () {
 
 describe('My TrueAge application - Happy Scenarios', () => {
 
-    it('should do the happy path on website', async () => {
+    it.skip('should do the happy path on website', async () => {
         await TrueWallet.clickGetStarted();
         var emailAddress = Utility.getGenericEmailAddress(currentDate);
         await TrueWallet.fillEmailAddress(emailAddress);
-        await Utility.sleep(2000);
         await TrueWallet.clickNext();
         await TrueWallet.searchTextOnPage('Great');
         await TrueWallet.clickNext();
@@ -51,21 +49,23 @@ describe('My TrueAge application - Happy Scenarios', () => {
 
 describe('My TrueAge application - Negative Scenarios', () => {
 
-    // it('should return an error message when email is invalid', async () => {
-    //     await TrueWallet.clickGetStarted();
-    //     var emailAddress = 'invalidEmail.com';
-    //     await TrueWallet.fillEmailAddress(emailAddress);
-    //     await sleep(2000);
-    //     await TrueWallet.searchTextOnPage('Please enter a valid email address');
-    // });
+    it.skip('should return an error message when email is invalid', async () => {
+        
+        var emailAddress = 'invalidEmail.com';
 
-    it('should return an error message when email is already in use', async () => {
+        await TrueWallet.clickGetStarted();
+        await TrueWallet.fillEmailAddress(emailAddress);
+        await Utility.sleep(2000);
+        await TrueWallet.clickWithNoValidation('Next');
+        await TrueWallet.searchTextOnPage('Please enter a valid email address');
+    });
+
+    it.skip('should return an error message when email is already in use', async () => {
         
         var emailAddress = 'rdrg.furlan@gmail.com';
 
         await TrueWallet.clickGetStarted();
         await TrueWallet.fillEmailAddress(emailAddress);
-        await Utility.sleep(2000);
         await TrueWallet.searchTextOnPage('already in use');
     });   
 
@@ -74,9 +74,9 @@ describe('My TrueAge application - Negative Scenarios', () => {
         var emailAddress = Utility.getGenericEmailAddress(currentDate);
 
         await TrueWallet.clickGetStarted();
-        await Utility.sleep(2000);
+        // await Utility.sleep(500);
         await TrueWallet.fillEmailAddress(emailAddress);
-        await Utility.sleep(2000);
+        // await Utility.sleep(2000);
         await TrueWallet.clickNext();
         await TrueWallet.searchTextOnPage('Great');
         await TrueWallet.clickNext();

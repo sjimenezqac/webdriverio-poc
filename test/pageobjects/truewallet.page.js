@@ -1,5 +1,3 @@
-
-const { default: $ } = require('webdriverio/build/commands/browser/$');
 const Page = require('./page');
 const BrowserElements = require('../common/browser.elements');
 
@@ -11,31 +9,35 @@ class TrueWallet extends Page {
      * define selectors using getter methods
      */
     get btnGetStarted(){
-        return browser.$(`//button[@type='button']//*[text()='Get Started']`);
+        return $(`//button[@type='button']//*[text()='Get Started']`);
     }
     get btnNext(){
-        return browser.$(`//button[@type='button']//*[text()='Next']`);
+        return $(`button=Next`);
     }
     get btnScan(){
-        return browser.$(`//button[@type='button']//*[text()='Scan']`);
+        return $(`//button[@type='button']//*[text()='Scan']`);
     }
     get btnTakePhoto(){
-        return browser.$(`//button[@type='button']//*[text()='Take Photo']`);
+        return $(`//button[@type='button']//*[text()='Take Photo']`);
     }
     get btnSave(){
-        return browser.$(`//button[@type='button']//*[text()='Save']`);
+        return $(`//button[@type='button']//*[text()='Save']`);
     }
     get inputEmailAddress(){
-        return browser.$(`//input[@type='email']`);
+        return $(`//input[@type='email']`);
     }
     get inputFileDocument(){
-        return browser.$(`//input[@type='file']`);
+        return $(`//input[@type='file']`);
     }
     
     /**
      * a method to encapsule automation code to interact with the page
      * e.g. to login using username and password
      */  
+     async clickWithNoValidation (buttonLabel) {
+        await $(`button=${buttonLabel}`).click();
+    }
+     
     async clickGetStarted () {
         let element = await this.btnGetStarted;
         BrowserElements.elementClick(element);
@@ -62,7 +64,7 @@ class TrueWallet extends Page {
     }
 
     async searchTextOnPage(message){
-        const element = browser.$(`//*[text()[contains(.,'${message}')]]`);
+        const element = $(`//*[text()[contains(.,'${message}')]]`);
         await BrowserElements.searchTextOnPage(element);
     }
 
@@ -73,14 +75,14 @@ class TrueWallet extends Page {
 
     async uploadDriverLicense(imagePath){
         let element = await this.inputFileDocument;
-        this.uploadImage(element, imagePath);
-        //BrowserElements.uploadImage(browser, element, imagePath);
+        //this.uploadImage(element, imagePath);
+        BrowserElements.uploadImage(element, imagePath);
     }
 
     async uploadPhoto(imagePath){
         let element = await this.inputFileDocument;
-        this.uploadImage(element, imagePath);
-        // BrowserElements.uploadImage(browser, element, imagePath);
+        //this.uploadImage(element, imagePath);
+        BrowserElements.uploadImage(element, imagePath);
     }
 
     /**
@@ -94,18 +96,13 @@ class TrueWallet extends Page {
     }
 
     async uploadImage(element, imagePath){
-        await browser.execute(
-            (el) => el.style.display = 'block',
-            element
-        );
-        await element.waitForExist({ timeout: 15000 });
-        await element.waitForDisplayed();
-        
         const path = require('path');
         var str = __dirname;
         str = str.replace('pageobjects', '');
         const filePath = path.join(str, imagePath);
         const remoteFilePath = await browser.uploadFile(filePath);
+
+        await BrowserElements.enableInputField(element);
         await element.setValue(remoteFilePath);
     }
 }
