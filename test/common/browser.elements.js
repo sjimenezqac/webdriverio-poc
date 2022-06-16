@@ -22,23 +22,27 @@ class BrowserElements {
     
     async enableInputField(element){
         await element.waitForExist({ timeout: 15000 });
-        console.log(element);
         await browser.execute(
             (el) => el.style.display = 'block',
             element
         );
-        console.log(element);
         await element.waitForDisplayed();
     }
     
     async uploadImage(element, imagePath){
-        const path = require('path');
-        var str = './/test';
-        const filePath = path.join(str, imagePath);
-        const remoteFilePath = await browser.uploadFile(filePath);
-
         await this.enableInputField(element);
-        await element.setValue(remoteFilePath);
+
+        const path = require('path');
+        var str = __dirname.replace('common','');
+        const filePath = path.join(str, imagePath);
+        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        console.log(browser.capabilities.browserName);
+        if (browser.capabilities.browserName == 'chrome'){
+            const remoteFilePath = await browser.uploadFile(filePath);
+            await element.setValue(remoteFilePath);
+        } else {
+            await element.setValue(filePath);
+        }
     }
 }
 

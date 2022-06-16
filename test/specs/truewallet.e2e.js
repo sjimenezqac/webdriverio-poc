@@ -1,5 +1,6 @@
 const TrueWallet = require('../pageobjects/truewallet.page');
 const Utility = require('../common/utility');
+const MailReader = require('../mail/gmail/process');
 
 let currentDate = '';
 
@@ -22,8 +23,8 @@ afterEach(function () {
 describe('My TrueAge application - Happy Scenarios', () => {
 
     it.skip('should do the happy path on website', async () => {
-        await TrueWallet.clickGetStarted();
         var emailAddress = Utility.getGenericEmailAddress(currentDate);
+        await TrueWallet.clickGetStarted();
         await TrueWallet.fillEmailAddress(emailAddress);
         await TrueWallet.clickNext();
         await TrueWallet.searchTextOnPage('Great');
@@ -45,6 +46,21 @@ describe('My TrueAge application - Happy Scenarios', () => {
         await TrueWallet.searchTextOnPage('Welcome to TruAge');
         await TrueWallet.searchTextOnPage('Over 21');
     }); 
+    
+    it('should test the Google API', async () => {
+        var emailAddress = process.env.CLIENT_MAIL;
+        await TrueWallet.clickLogInMain();
+        await TrueWallet.fillEmailAddress(emailAddress);
+        await Utility.sleep(5000);
+        await TrueWallet.clickLogIn();
+        await Utility.sleep(20000);
+        const verificationCode = await MailReader.readMail();
+        await TrueWallet.fillGenericInputField(verificationCode);
+        await Utility.sleep(1000);
+        await TrueWallet.clickVerify();
+        await TrueWallet.searchTextOnPage('Welcome to TruAge');
+        await TrueWallet.searchTextOnPage('Over 21');
+    });   
 });
 
 describe('My TrueAge application - Negative Scenarios', () => {
@@ -69,7 +85,7 @@ describe('My TrueAge application - Negative Scenarios', () => {
         await TrueWallet.searchTextOnPage('already in use');
     });   
 
-    it('should return a error when document is invalid', async () => {
+    it.skip('should return a error when document is invalid', async () => {
         
         var emailAddress = Utility.getGenericEmailAddress(currentDate);
 
@@ -85,5 +101,5 @@ describe('My TrueAge application - Negative Scenarios', () => {
         await TrueWallet.searchTextOnPage('Scan barcode on the back of license');
         await TrueWallet.uploadDriverLicense('scenarios//photos//Thor.png');
         await TrueWallet.searchTextOnPage('Scan Failure');
-    });   
+    });  
 });

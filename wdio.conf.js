@@ -65,28 +65,30 @@ exports.config = {
                         '--disable-gpu',
                         '--disable-popup-blocking',
                         'incognito',
-                        //'headless',
+                      //  'headless',
                         'start-maximized',
                         'window-size=1080,720',
                         '--ignore-certificate-errors']},
             acceptInsecureCerts: true
-        },
-        {
-            maxInstances: 5,
-            browserName: 'firefox',
-            'moz:firefoxOptions': {
-                'prefs': {'media.navigator.streams.fake' : true,
-                          'media.navigator.permission.disabled' : true,
-                          // 'browser.download.folderList' : 2,
-                          'browser.download.manager.showWhenStarting' : false,
-                          'browser.helperApps.neverAsk.saveToDisk' : 'application/zip,application/x-compress,application/octet-stream'
-                        },
-                'args': [
-                        ''
-                        //'-private',
-                        ]},
-            acceptInsecureCerts: true
         }
+        // ,
+        // {
+        //     maxInstances: 5,
+        //     // specs: [
+        //     //     'test/ffOnly/*'
+        //     // ],
+        //     browserName: 'firefox',
+        //     'moz:firefoxOptions': {
+        //         'prefs': {'media.navigator.streams.fake' : true,
+        //                   'media.navigator.permission.disabled' : true,
+        //                   // 'browser.download.folderList' : 2,
+        //                   'browser.download.manager.showWhenStarting' : false,
+        //                   'browser.helperApps.neverAsk.saveToDisk' : 'application/zip,application/x-compress,application/octet-stream'
+        //                 },
+        //        // 'args': ['-headless']
+        //     },
+        //     acceptInsecureCerts: true
+        // }
     ],
     //
     // ===================

@@ -8,6 +8,15 @@ class TrueWallet extends Page {
     /**
      * define selectors using getter methods
      */
+    get btnLogInMain(){
+        return $(`//button[@type='button']//*[text()='Log in']`);
+    }
+    get btnLogIn(){
+        return $(`//button[@type='button']//*[text()='Login']`);
+    }
+    get btnVerify(){
+        return $(`//button[@type='button']//*[text()='Verify']`);
+    }
     get btnGetStarted(){
         return $(`//button[@type='button']//*[text()='Get Started']`);
     }
@@ -29,6 +38,9 @@ class TrueWallet extends Page {
     get inputFileDocument(){
         return $(`//input[@type='file']`);
     }
+    get inputTextGeneric(){
+        return $(`//input[@type='text']`);
+    }
     
     /**
      * a method to encapsule automation code to interact with the page
@@ -37,7 +49,21 @@ class TrueWallet extends Page {
      async clickWithNoValidation (buttonLabel) {
         await $(`button=${buttonLabel}`).click();
     }
-     
+
+    async clickLogInMain () {
+        let element = await this.btnLogInMain;
+        BrowserElements.elementClick(element);
+    }
+
+    async clickLogIn () {
+        let element = await this.btnLogIn;
+        BrowserElements.elementClick(element);
+    }
+    async clickVerify () {
+        let element = await this.btnVerify;
+        BrowserElements.elementClick(element);
+    }
+
     async clickGetStarted () {
         let element = await this.btnGetStarted;
         BrowserElements.elementClick(element);
@@ -75,14 +101,17 @@ class TrueWallet extends Page {
 
     async uploadDriverLicense(imagePath){
         let element = await this.inputFileDocument;
-        //this.uploadImage(element, imagePath);
         BrowserElements.uploadImage(element, imagePath);
     }
 
     async uploadPhoto(imagePath){
         let element = await this.inputFileDocument;
-        //this.uploadImage(element, imagePath);
         BrowserElements.uploadImage(element, imagePath);
+    }
+
+    async fillGenericInputField(value){
+        let element = await this.inputTextGeneric;
+        BrowserElements.elementSetValue(element, value);
     }
 
     /**
@@ -100,10 +129,11 @@ class TrueWallet extends Page {
         var str = __dirname;
         str = str.replace('pageobjects', '');
         const filePath = path.join(str, imagePath);
-        const remoteFilePath = await browser.uploadFile(filePath);
-
         await BrowserElements.enableInputField(element);
-        await element.setValue(remoteFilePath);
+
+        await element.setValue(filePath);
+        // const remoteFilePath = await browser.uploadFile(filePath);
+        //await element.setValue(remoteFilePath);
     }
 }
 
