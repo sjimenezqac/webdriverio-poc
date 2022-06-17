@@ -47,7 +47,7 @@ describe('My TrueAge application - Happy Scenarios', () => {
         await TrueWallet.searchTextOnPage('Over 21');
     }); 
     
-    it('should test the Google API', async () => {
+    it.skip('should test the Google API', async () => {
         var emailAddress = process.env.CLIENT_MAIL;
         await TrueWallet.clickLogInMain();
         await TrueWallet.fillEmailAddress(emailAddress);
@@ -102,4 +102,18 @@ describe('My TrueAge application - Negative Scenarios', () => {
         await TrueWallet.uploadDriverLicense('scenarios//photos//Thor.png');
         await TrueWallet.searchTextOnPage('Scan Failure');
     });  
+
+    it('should return an error when try to insert an invalid verify code', async () => {
+        var emailAddress = process.env.CLIENT_MAIL;
+        await TrueWallet.clickLogInMain();
+        await TrueWallet.fillEmailAddress(emailAddress);
+        await Utility.sleep(5000);
+        await TrueWallet.clickLogIn();
+        await Utility.sleep(2000);
+        const verificationCode = '123123';
+        await TrueWallet.fillGenericInputField(verificationCode);
+        await Utility.sleep(1000);
+        await TrueWallet.clickVerify();
+        await TrueWallet.searchTextOnPage('There was a problem');        
+    });   
 });
